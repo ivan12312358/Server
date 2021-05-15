@@ -9,6 +9,8 @@ To run akinator:
   Interactive mode:
     
     ./akinator -i <filename>
+  
+    <filename> - name of your base (this option can be empty)    
     
   Server mode:
   
