@@ -3,99 +3,56 @@
 #include "../Libraries/akinator.h"
 #include <sys/socket.h>
 
+extern void server (char* port_c, char* filename);
 
 //-------------------------------------------------------------------------------
 
-void Menu (char* filename)
+int main(int argc, char* argv[])
 {
-	print ("\t\tHello! I am Akinator!\n");
-	//system ("echo \"Hello! I am Akinator! Enter base and game mode\" | festival --tts");
-
-	if(!filename)
+	if(!strcmp(argv[1], "-i"))
 	{
-		print ("Enter name of file with base or type \"New\" to use empty base and choose game mode\n\n");
-		scan  ();
+		Menu(argv[2], stdin, stdout);
 	}
-	else
-		sprintf (buf, "%s", filename);
-
-	Tree tree (buf);
-
-	char mode[8] = "";
-
-	while(true)
+	else if(!strcmp(argv[1], "-s"))
 	{
-		print  ("\t\t\tMENU\n"
-				// "0 - Clear terminal\n"
-				"1 - Guessing\n"
-				"2 - Definition\n"
-				"3 - Compare\n"
-				"4 - Graph\n"
-				"5 - Make a save\n"
-				"6 - Exit\n");
-
-		for(int i = 0; i < 8; i++)
-			mode[i] = '\0';
-
-		recv (sock, mode, 8, 0);
-		mode[strlen(mode) - 2] = '\0';
-
-
-		switch(mode[0])
-		{
-			case(Clear):
-				//system("clear");
-				break;
-			case(Guessing):
-				tree.Akinator ();
-				break;
-			case(Definition):
-				tree.Find ();
-				break;
-			case(Compare):
-				tree.Compare ();
-				break;
-			case(Graph):
-				tree.Graph ();
-				break;
-			case(Save):
-				tree.Save ();
-				break;
-			case(Exit):
-				close (sock);
-				return;
-			default:
-				print ("WRONG command. Try again\n");
-		}
+		if(argv[1] == nullptr)
+			printf("Type port to connect, for example \"7777\"\n");
+		else server (argv[2], argv[3]);
 	}
+	else printf("Type game mode \"-i\" for interactive or \"-s\" for server mode\n");
+
+	return 0;
 }
 
 //-------------------------------------------------------------------------------
 
-Tree::Tree (const char* filename)
+Tree::Tree (const char* filename, FILE* f_in, FILE* f_out) :
+	fin_  (f_in),
+	fout_ (f_out)
 {
 	if(!strcmp(filename, "New"))
 	{
 		head_ = (Node*) calloc (1, sizeof (Node));
 
 		//system ("echo \"Please, enter first object\" | festival --tts");
-		print ("Please, enter first object:\n");
-		scan ();
+		print (f_out, "Please, enter first object:\n"); 
+		scan  (f_in);
 
-		head_->data_ = (char*) calloc (strlen (buf) + 1, sizeof (char));
+		head_->data = (char*) calloc (strlen (buf) + 1, sizeof (char));
 
-		sprintf (head_->data_, "%s", buf);
+		sprintf (head_->data, "%s", buf);
 		return;
 	}
 
 	char *symbols = nullptr;
-	int size = Read (&symbols, filename);
+	int size = Read (&symbols, filename, f_out);
 
 	if(size == 0)
 	{
 		//system ("echo \"Empty base!\" | festival --tts");
-		print ("Your base is empty! I will use default base.\n");
-		size = Read (&symbols, "default.base");
+		print (fout_, "Your base is empty! I will use default base.\n");
+		
+		size = Read (&symbols, "default.base", f_out);
 	}
 
 	char* tmp = symbols;
@@ -117,9 +74,9 @@ Tree::Tree (const char* filename)
 
 Tree::~Tree ()
 {
-	print ("Do you want to save base? Type [Y/N]\n");
+	print (fout_,"Do you want to save base? Type [Y/N]\n");
 	//system ("echo \"Do you want to save base?\" | festival --tts ");
-	scan ();
+	scan  (fin_);
 
 	if(!strcmp (buf, "Y"))
 		Save ();
@@ -128,8 +85,66 @@ Tree::~Tree ()
 
 	head_->free_ ();
 
-	print ("Bye!\n");
+	print (fout_,"Bye!\n");
 	//system ("echo \"Bye\" | festival --tts");
+}
+
+//-------------------------------------------------------------------------------
+
+void Menu (char* filename, FILE* f_in, FILE* f_out)
+{
+	print (f_out, "\t\tHello! I am Akinator!\n");
+	//system ("echo \"Hello! I am Akinator! Enter base and game mode\" | festival --tts");
+
+	if(!filename)
+	{
+		print (f_out, "Enter name of file with base or type \"New\" to use empty base and choose game mode\n\n");
+		scan  (f_in);
+	}
+	else
+		sprintf (buf, "%s", filename);
+
+	Tree tree (buf, f_in, f_out);
+
+	while(true)
+	{
+		print  (f_out, "\t\t\tMENU\n"
+				// "0 - Clear terminal\n"
+				"1 - Guessing\n"
+				"2 - Definition\n"
+				"3 - Compare\n"
+				"4 - Graph\n"
+				"5 - Make a save\n"
+				"6 - Exit\n");
+
+		scan (f_in);
+
+		switch(buf[0])
+		{
+			case(Clear):
+				//system("clear");
+				break;
+			case(Guessing):
+				tree.Akinator ();
+				break;
+			case(Definition):
+				tree.Find ();
+				break;
+			case(Compare):
+				tree.Compare ();
+				break;
+			case(Graph):
+				tree.Graph ();
+				break;
+			case(Save):
+				tree.Save ();
+				break;
+			case(Exit):
+				return;
+			default:
+				print (f_out, "WRONG command. Try again\n");
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------
@@ -142,37 +157,38 @@ void Tree::Akinator ()
 
 	while(true)
 	{
-		sprintf (string, "Your object is {%s}? [Y\\N]\n", curr->data_);
-		print (string);
-		scan  ();
+		fprintf (fout_, "Your object is {%s}? [Y\\N]\n", curr->data);
+
+		print (fout_, "");		
+		scan  (fin_);
 
 		if (!strcmp (buf, "N"))
 		{
-			if(curr->left_ == nullptr)
+			if(curr->left == nullptr)
 			{
-				curr->new_obj_ ();
+				curr->new_obj_ (fin_, fout_);
 				curr = head_;
 			}
 			else
-				curr = curr->left_;
+				curr = curr->left;
 		}
 		else if(!strcmp (buf, "Y"))
 		{	
-			if(curr->right_ == nullptr)
+			if(curr->right == nullptr)
 			{
 				//system ("echo \"Wohoo!!! We found it\" | festival --tts");
-				print ("Wohoo!!! We found it!\n");
+				print (fout_, "Wohoo!!! We found it!\n");
 				curr = head_;
 			} 
 			else 
-				curr = curr->right_;
+				curr = curr->right;
 		}
 		else if(!strcmp (buf, "Quit"))
 			break;
 		else
 		{
 			//system ("echo \"WRONG COMMAND. Type 'Y' or 'N'\" | festival --tts");			
-			print ("WRONG COMMAND. Type [Y\\N] or 'Quit':\n");
+			print (fout_, "WRONG COMMAND. Type [Y\\N] or 'Quit':\n");
 		}
 	}
 }
@@ -181,14 +197,12 @@ void Tree::Akinator ()
 
 void Tree::Save ()
 {	
-	print ("Saving...\n");
+	print (fout_, "Saving...\n");
 	//system ("echo \"Where to save your database?\" | festival --tts");
-	print ("Where to save your database?\n");
+	print (fout_, "Where to save your database?\n");
+	scan  (fin_);
 
-	scan ();
-
-	if(!strcmp(buf, "server"))
-		strcat(buf, "(copy)");
+	strcat (buf, ".base");
 
 	FILE*   f_dump = fopen (buf, "w");
 	assert (f_dump);
@@ -197,8 +211,8 @@ void Tree::Save ()
 
 	fclose (f_dump);
 
-	sprintf (string, "Saved in %s\n", buf);
-	print (string);
+	fprintf (fout_, "Saved in %s\n", buf);
+	print   (fout_, "");
 }
 
 //-------------------------------------------------------------------------------
@@ -207,7 +221,7 @@ void Tree::Find ()
 {
 	//system("clear");
 	//system ("echo \"Enter object that you want to find\" | festival --tts");	
-	print ("Enter object that you want to find:\n");
+	print (fout_,"Enter object that you want to find:\n");
 
 	Stack stk;
 
@@ -221,19 +235,19 @@ void Tree::Find ()
 	{
 		if(stk[i] == -1)
 		{
-			sprintf (string, "Not {%s}\n", curr->data_);
-			print   (string);
-			curr = curr->left_;
+			fprintf (fout_, "Not {%s}\n", curr->data);
+			print   (fout_, "");
+			curr = curr->left;
 		}
 		else if(stk[i] == 1)
 		{
-			sprintf (string, "{%s}\n", curr->data_);
-			print   (string);
-			curr = curr->right_;
+			fprintf (fout_, "{%s}\n", curr->data);
+			print   (fout_, "");
+			curr = curr->right;
 		}
 	}
-	sprintf (string, "{%s}\n", curr->data_);
-	print   (string);
+	fprintf (fout_, "{%s}\n", curr->data);
+	print   (fout_, "");
 }
 
 
@@ -243,7 +257,7 @@ void Tree::Compare ()
 {
 	//system("clear");
 	//system("echo \"What to compare\" | festival --tts");
-	print ("Enter objects that you want to compare:\n");
+	print (fout_,"Enter objects that you want to compare:\n");
 
 	Stack    stk1;
 	Search (&stk1);
@@ -253,7 +267,7 @@ void Tree::Compare ()
 	Search (&stk2);
 	int size2 = stk2.get_size ();
 
-	print ("Objects are same in:\n");
+	print (fout_,"Objects are same in:\n");
 
 	Node* curr = head_;
 
@@ -262,32 +276,32 @@ void Tree::Compare ()
 	for( ; diff < size1 && diff < size2; diff++)
 	{
 		if(stk1[diff] == stk2[diff])
-			curr = curr->compare_(stk1, &diff);
+			curr = curr->compare_(stk1, &diff, fout_);
 		else break;
 	}
 
 	Node* tmp = curr;
 
-	print ("\nObjects are different in:\n");
+	print (fout_,"\nObjects are different in:\n");
 
 	for(int m = diff; m < size1; m++)
-		curr = curr->compare_(stk1, &m);
+		curr = curr->compare_(stk1, &m, fout_);
 
-	print ("\n");
+	print (fout_,"\n");
 
 	curr = tmp;
 
 	for(int n = diff; n < size2; n++)
-		curr = curr->compare_(stk2, &n);
+		curr = curr->compare_(stk2, &n, fout_);
 
-	print ("\n");
+	print (fout_,"\n");
 }
 
 //-------------------------------------------------------------------------------
 
 void  Tree::Search (Stack* stk)
 {
-	scan ();
+	scan (fin_);
 
 	int mode = 0;
 
@@ -298,18 +312,18 @@ void  Tree::Search (Stack* stk)
 
 void Tree::Graph ()
 {
-	if(head_->data_ == nullptr)
+	if(head_->data == nullptr)
 	{
-		print ("Tree is empty\n");
+		print (fout_,"Tree is empty\n");
 		return;
 	}
 
 	//system("clear");
-	print ("Making graph...\n");
-	print ("Where to save your graph? Type name of file\n");
-	scan  ();
+	print (fout_, "Making graph...\n");
+	print (fout_, "Where to save your graph? Type name of file\n");
+	scan  (fin_);
 
-	char filename[SIZE + 4] = "";
+	char filename[SIZE*3] = "";
 
 	sprintf(filename, "%s.dot", buf);
 
@@ -326,13 +340,13 @@ void Tree::Graph ()
 			"\tsubgraph cluster\n\t{\n"
 			"\t\tlabel = \"head\";\n"
 			"\t\t%s [fillcolor = royalblue, style = \"rounded,filled\", shape = diamond]\n",
-			buf, head_->data_);
+			buf, head_->data);
 
-	if(head_->right_ && head_->left_)
+	if(head_->right && head_->left)
 	{
 		head_->g_print_		  (f_graph);
-		head_->left_ ->graph_ (f_graph);
-		head_->right_->graph_ (f_graph);
+		head_->left ->graph_ (f_graph);
+		head_->right->graph_ (f_graph);
 	}
 	else
 		fprintf (f_graph, "\t}\n");
@@ -341,19 +355,19 @@ void Tree::Graph ()
 
 	fclose  (f_graph);
 
-	sprintf (string, "dot -Tpng %s.dot -o %s.png", buf, buf);
-	system  (string);
+	sprintf (filename, "dot -Tpng %s.dot -o %s.png", buf, buf);
+	system  (filename);
 }
 
 //-------------------------------------------------------------------------------
 
-int Read (char** symbols, const char* filename)
+int Read (char** symbols, const char* filename, FILE* f_out)
 {
 	FILE* base = fopen (filename, "r");
 
 	if(base == nullptr)
 	{
-		print ("Couldn't find file\n");
+		print (f_out,"Couldn't find file\n");
 		return 0;
 	}
 
@@ -386,17 +400,32 @@ void Split (char** str, char* symbols)
 	}
 }
 
+//-------------------------------------------------------------------------------
 
-void print (const char* buffer)
+void print (FILE* f_out, const char* buffer)
 {
-	send(sock, buffer, strlen(buffer), 0);
+	fprintf (f_out, "%s", buffer);
+	fflush  (f_out);
 }
 
-void scan ()
+//-------------------------------------------------------------------------------
+
+void scan  (FILE* fin_)
 {
 	for(int i = 0; i < SIZE; i++)
 		buf[i] = '\0';
 
-	recv (sock, buf, SIZE, 0);
-	buf[strlen(buf) - 2] = '\0';
+	int descr = fileno(fin_);
+
+ 	if(descr == 0)
+	{
+		fgets(buf, SIZE, stdin);
+		buf[strlen (buf) - 1] = '\0';
+	}
+	else
+	{
+		recv (descr, buf, SIZE, 0);
+		buf[strlen (buf) - 2] = '\0';
+	}
+
 }

@@ -5,6 +5,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-extern void Menu(char* filename);
+extern void Menu(char* filename, FILE* f_in, FILE* f_out);
 
 int sock = 0;
