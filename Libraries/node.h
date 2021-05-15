@@ -1,26 +1,13 @@
-#pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <stdarg.h>
+class Stack;
 
-extern const int SIZE;
-extern char buf[];
-extern void print (FILE* f_out, const char* buffer);
-extern void scan  (FILE* f_in);
-
-class Tree;
-struct Stack;
-
-struct Node
+class Node
 {
-	char* data  = nullptr;
-	Node* left  = nullptr;
-	Node* right = nullptr;
-	Node (char* data);
-
 	public:
+		char* data  = nullptr;
+		Node* left  = nullptr;
+		Node* right = nullptr;
+
+		Node (char* data);
 		void new_obj_ (FILE* f_in, FILE* f_out);
 		void free_	  ();
 		void fprint_  (FILE* f_dump);

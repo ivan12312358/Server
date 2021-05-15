@@ -1,10 +1,8 @@
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <netinet/in.h>
 
-extern void Menu(char* filename, FILE* f_in, FILE* f_out);
-
-int sock = 0;
+extern void Menu (char* filename, FILE* f_in, FILE* f_out);

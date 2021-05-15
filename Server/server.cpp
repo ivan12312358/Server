@@ -2,7 +2,7 @@
 
 void server(char* port_c, char* filename)
 {
-	int listener = 0;
+	int listener = 0, sock = 0;
 	struct sockaddr_in addr;
 
 	listener = socket(AF_INET, SOCK_STREAM, 0);
@@ -13,7 +13,6 @@ void server(char* port_c, char* filename)
 	}
 
 	int port = atoi(port_c);
-
 	addr.sin_family = AF_INET;
 	addr.sin_port   = htons (port);
 	addr.sin_addr.s_addr = htonl (INADDR_ANY);

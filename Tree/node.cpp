@@ -1,6 +1,9 @@
+#include "../Libraries/files.h"
 #include "../Libraries/node.h"
 #include "../Libraries/stack.h"
 
+extern const int SIZE;
+extern char buf[];
 int SLSH_CNT = 0;
 
 Node::Node (char* data) : 
