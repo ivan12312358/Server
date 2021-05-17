@@ -5,6 +5,7 @@ char buf[SIZE] = "";
 
 //-------------------------------------------------------------------------------
 
+// should be part of onegin library
 void split (char** str, char* symbols)
 {
 	symbols = strtok (symbols, " \n");
