@@ -23,7 +23,10 @@ void server(char* port_c, char* filename)
 		exit(2);
 	}
 
-	listen(listener, 1);
+	int ret = listen(listener, 1);
+	if (ret < 0) {
+		perror("Error listening:");
+	}
 
 	while(1)
 	{
