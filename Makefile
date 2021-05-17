@@ -12,4 +12,4 @@ all: ./Akinator/akinator.cpp ./Stack/stack.cpp ./Tree/files.cpp ./Tree/tree.cpp 
 	rm -rf *.o
 
 clean:
-	rm -rf *.o STACK_DUMP.log base.log graph.dot graph.png saved.base
+	rm -rf *.o *.dot *.png *.log

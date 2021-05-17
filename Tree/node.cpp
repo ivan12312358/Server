@@ -45,7 +45,7 @@ void Node::new_obj_ (FILE* f_in, FILE* f_out)
     left  = new Node (data);
 
 	//system ("echo \"What is your object?\" | festival --tts");
-    print (f_out, "What is you object?\n");
+    print (f_out, "What is your object?\n");
     scan  (f_in);
 
     right =  new Node (strdup (buf));
