@@ -5,7 +5,6 @@ char buf[SIZE] = "";
 
 //-------------------------------------------------------------------------------
 
-// should be part of onegin library
 void split (char** str, char* symbols)
 {
 	symbols = strtok (symbols, " \n");
@@ -23,7 +22,7 @@ void split (char** str, char* symbols)
 
 void print (FILE* f_out, const char* buffer)
 {
-	fprintf (f_out, "%s", buffer);
+	fprintf (f_out, "%s\n", buffer);
 	fflush  (f_out);
 }
 
@@ -31,21 +30,8 @@ void print (FILE* f_out, const char* buffer)
 
 void scan (FILE* fin_)
 {
-	for(int i = 0; i < SIZE; i++)
-		buf[i] = '\0';
-
-	int descr = fileno(fin_);
-
- 	if(descr == 0)
-	{
-		fgets(buf, SIZE, fin_);
-		buf[strlen (buf) - 1] = '\0';
-	}
-	else
-	{
-		recv (descr, buf, SIZE, 0);
-		buf[strlen (buf) - 2] = '\0';
-	}
+	fgets(buf, SIZE, fin_);
+	buf[strlen (buf) - 1] = '\0';
 }
 
 //-------------------------------------------------------------------------------

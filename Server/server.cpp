@@ -23,7 +23,7 @@ void server(char* port_c, char* filename)
 		exit(2);
 	}
 
-	int ret = listen(listener, 1);
+	int ret = listen(listener, 10);
 	if (ret < 0) {
 		perror("Error listening:");
 	}
@@ -46,16 +46,18 @@ void server(char* port_c, char* filename)
 			{
 				close(listener);
 
-				FILE* file = fdopen (sock, "w");
+				FILE* f_in  = fdopen (sock, "r");
+				FILE* f_out = fdopen (sock, "w");
 
-				Menu(filename, file, file);
+				Menu(filename, f_in, f_out);
 
-				fclose(file);
+				fclose(f_in);
+				fclose(f_out);
 				close(sock);
 				_exit(0);		
 			}
 			default:
-				close(sock);
+				break;
 		}
 	}
 }

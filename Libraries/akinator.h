@@ -20,4 +20,11 @@ enum game_modes
 extern char buf[];
 extern const int SIZE;
 extern void server(char* port_c, char* filename);
+
+/*!
+ \brief Allow to choose game mode
+ \param [in] filename - name of file
+ \param [in] f_in - input stream
+ \param [in] f_out - output stream
+*/
 void Menu (char* filename, FILE* f_in, FILE* f_out);

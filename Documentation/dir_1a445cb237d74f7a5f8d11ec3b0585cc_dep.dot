@@ -1,0 +1,8 @@
+digraph "Server" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  dir_1a445cb237d74f7a5f8d11ec3b0585cc [shape=box, label="Server", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_1a445cb237d74f7a5f8d11ec3b0585cc.html"];
+  dir_6d2d5b60bd20db849a9486835a2715aa [shape=box label="Libraries" URL="dir_6d2d5b60bd20db849a9486835a2715aa.html"];
+  dir_1a445cb237d74f7a5f8d11ec3b0585cc->dir_6d2d5b60bd20db849a9486835a2715aa [headlabel="1", labeldistance=1.5 headhref="dir_000002_000001.html"];
+}

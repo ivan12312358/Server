@@ -4,10 +4,6 @@
 
 //------------------------------------------------------------------------------
 
-/* comments should be added explaining options parsing
- it would be nice if you moved akinator function definitions and
- main function to separate files, like main.cpp and akinator.cpp
-*/
 int main(int argc, char* argv[])
 {
 	if(!strcmp(argv[1], "-i"))

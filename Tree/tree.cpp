@@ -56,13 +56,6 @@ Tree::Tree (const char* filename, FILE* f_in, FILE* f_out) :
 
 Tree::~Tree ()
 {
-	print (fout_,"Do you want to save base? Type [Y/N]\n");
-	//system ("echo \"Do you want to save base?\" | festival --tts ");
-	scan  (fin_);
-
-	if(!strcmp (buf, "Y"))
-		Save ();
-
 	assert (head_);
 
 	head_->free_ ();
