@@ -2,8 +2,12 @@
 #include "../Libraries/files.h"
 #include "../Libraries/tree.h"
 
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
+/* comments should be added explaining options parsing
+ it would be nice if you moved akinator function definitions and
+ main function to separate files, like main.cpp and akinator.cpp
+*/
 int main(int argc, char* argv[])
 {
 	if(!strcmp(argv[1], "-i"))
@@ -50,7 +54,7 @@ void Menu (char* filename, FILE* f_in, FILE* f_out)
 				"6 - Exit\n");
 
 		scan (f_in);
-
+		// what does buf[0] mean? Some kind of magic number, needs explanation
 		switch(buf[0])
 		{
 			case(Clear):

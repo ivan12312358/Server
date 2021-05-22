@@ -1,3 +1,9 @@
+
+#pragma once
+
+#include <stdio.h>
+
+
 class Stack;
 
 class Node
