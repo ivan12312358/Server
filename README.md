@@ -21,7 +21,9 @@ To run akinator:
     
     To connect to server:
       
-      telnet localhost <port>
+      telnet <ip> <port>
+
+      <ip> - ip address of the server
 
 To remove files:
 
