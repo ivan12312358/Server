@@ -8,13 +8,13 @@ To run akinator:
 
   Interactive mode:
     
-    ./akinator -i <filename>
+    ./akinator.out -i <filename>
   
     <filename> - name of your base (this option can be empty)    
     
   Server mode:
   
-    ./akinator -s <port> <filename>
+    ./akinator.out -s <port> <filename>
   
     <filename> - name of your base (this option can be empty)
     <port>     - server port
