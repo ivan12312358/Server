@@ -1,5 +1,8 @@
 # Server
 
+Documentation in the file:
+  index.html
+
 To compile programm:
 
   make all
