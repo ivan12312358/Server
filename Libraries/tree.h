@@ -16,6 +16,6 @@ class Tree
 		void Save     ();
 		void Graph	  ();
 		void Search	  (Stack* stk);
-		Tree(const Tree& tree) = delete;
+		Tree (const Tree& tree) = delete;
 		Tree& operator= (Tree& tree);
 };

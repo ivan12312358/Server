@@ -52,7 +52,7 @@ int read (char** symbols, const char* filename, FILE* f_out)
 
 	if(size > 0)
 	{
-		*symbols = (char*) calloc (size, sizeof (char));
+		*symbols = (char*) calloc (size + 1, sizeof (char));
 		fread (*symbols, sizeof (char), size, base);
 	}
 	fclose (base);

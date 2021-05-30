@@ -42,7 +42,7 @@ void Node::walk_(char** str, int* cnt)
 
 void Node::new_obj_ (FILE* f_in, FILE* f_out)
 {
-    left  = new Node (data);
+    left = new Node (data);
 
 	//system ("echo \"What is your object?\" | festival --tts");
     print (f_out, "What is your object?\n");

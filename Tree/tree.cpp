@@ -75,7 +75,6 @@ void Tree::Akinator ()
 	while(true)
 	{
 		fprintf (fout_, "Your object is {%s}? [Y\\N]\n", curr->data);
-
 		print (fout_, "");		
 		scan  (fin_);
 
@@ -277,4 +276,3 @@ void Tree::Graph ()
 }
 
 //-------------------------------------------------------------------------------
-
