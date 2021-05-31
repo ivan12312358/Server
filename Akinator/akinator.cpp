@@ -50,8 +50,8 @@ void Menu (char* filename, FILE* f_in, FILE* f_out)
 				"6 - Exit\n");
 
 		scan (f_in);
-		// what does buf[0] mean? Some kind of magic number, needs explanation
-		switch(buf[0])
+
+		switch(buf[0])		//buf[0] - game mode entered by user using scan function
 		{
 			case(Clear):
 				//system("clear");
