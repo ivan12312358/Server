@@ -6,6 +6,12 @@
 
 int main(int argc, char* argv[])
 {
+	if(argc < 2)
+	{
+		printf("Type game mode in the startup parameters \"-i\" for interactive or \"-s\" for server mode\n");
+		return 1;
+	}
+
 	if(!strcmp(argv[1], "-i"))
 	{
 		Menu(argv[2], stdin, stdout);
@@ -16,7 +22,6 @@ int main(int argc, char* argv[])
 			printf("Type port to connect, for example \"7777\"\n");
 		else server (argv[2], argv[3]);
 	}
-	else printf("Type game mode \"-i\" for interactive or \"-s\" for server mode\n");
 
 	return 0;
 }
